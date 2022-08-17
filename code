@@ -1,0 +1,142 @@
+int a[7]={0X33,0X32,0X28,0X01,0X06,0X0F};
+char l[]="light";
+char d[]="dark ";
+int x,y,z,i;
+
+void command(int q)
+{
+    z=0x00;
+    x=q;
+    y=x&B11110000;
+    z=z|y;
+    PORTD=z;
+    z=z|B00001000;
+    PORTD=z;
+    delay(10);
+    z=z&B11110111;
+      PORTD=z;
+    delay(10);
+    
+     z=0x00;
+    x=q;
+    y=x&B00001111;
+    y=y<<4;
+    z=z|y;
+    PORTD=z;
+    z=z|B00001000;
+    PORTD=z;
+    delay(10);
+    z=z&B11110111;
+      PORTD=z;
+    delay(10);
+  }
+
+void data(int q)
+{ 
+  z=0x01;
+    x=q;
+    y=x&B11110000;
+    z=z|y;
+    PORTD=z;
+    z=z|B00001000;
+    PORTD=z;
+    delay(10);
+    z=z&B11110111;
+      PORTD=z;
+    delay(10);
+   
+   z=0x01;
+    x=q;
+    y=x&B00001111;
+   y=y<<4;
+    z=z|y;
+    PORTD=z;
+    z=z|B00001000;
+    PORTD=z;
+    delay(10);
+    z=z&B11110111;
+      PORTD=z;
+    delay(10);
+   }
+
+
+
+void setup()
+{
+  DDRD=0xFF;
+  
+  for(i=0;i<=5;i++)
+  {
+    command(a[i]);
+  }
+  
+  command(0x80);
+  
+ 
+}
+
+int c;
+int p;
+
+void loop()
+{ c = analogRead(A0);
+ p = analogRead(A1);
+ 
+ if (c<800 && p>500)
+ {
+   for(i=0; i<=4; i++)
+  {
+    data(l[i]);
+  }
+ command(0x8A);
+ for(i=0; i<=4; i++)
+  {
+    data(d[i]);
+  }
+ command(0x80);
+ }
+ else if (c>500 && p<800)
+ {
+   for(i=0; i<=4; i++)
+  {
+    data(d[i]);
+  }
+ command(0x8A);
+ for(i=0; i<=4; i++)
+  {
+    data(l[i]);
+  }
+ command(0x80);
+ }
+ 
+ else if (c>500 && p>500)
+ {
+   for(i=0; i<=4; i++)
+  {
+    data(d[i]);
+  }
+ command(0x8A);
+ for(i=0; i<=4; i++)
+  {
+    data(d[i]);
+  }
+ command(0x80);
+ }
+ 
+ else 
+ {
+   for(i=0; i<=4; i++)
+  {
+    data(l[i]);
+  }
+ command(0x8A);
+ for(i=0; i<=4; i++)
+  {
+    data(l[i]);
+  }
+ command(0x80);
+ }
+  
+ 
+
+}
